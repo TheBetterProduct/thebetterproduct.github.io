@@ -5,52 +5,315 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Better Product</title>
 
-  <meta name="description" content="The Better Product — design-led, technology-driven essentials." />
+  <meta name="description" content="The Better Product — design-forward consumer goods built with intention." />
 
   <style>
     :root{
-      --bg:#ffffff;
-      --text:#111111;
-      --muted:rgba(17,17,17,.6);
+      --radius: 22px;
+      --pageBg: #fff;
+      --pageText: #111;
+      --muted: rgba(17,17,17,.68);
+
+      --cardBg:#fff;
+      --cardStroke: rgba(17,17,17,.08);
+      --shadow:0 12px 28px rgba(0,0,0,.10);
+      --shadowHover:0 18px 42px rgba(0,0,0,.14);
+      --tileRadius:28px;
+
+      --easeApple:cubic-bezier(.22,.61,.36,1);
+      --easeOut:cubic-bezier(.2,.8,.2,1);
+
+      --contentMax:1180px;
+      --gutter:clamp(16px,4vw,56px);
+
+      /* Tall Red Bull–style tiles */
+      --railTileWidth:520px;
+      --railTileMinHeight:640px;
+      --railMediaRatio:3 / 4;
     }
 
-    html,body{
+    *{ box-sizing:border-box; }
+
+    body{
       margin:0;
-      padding:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:var(--pageBg);
+      color:var(--pageText);
     }
 
-    .wrap{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:48px 24px;
+    a{ color:inherit; text-decoration:none; }
+
+    /* ==============================
+       HERO
+       ============================== */
+    .heroWrap{
+      min-height:140vh;
+      position:relative;
+      background:#000;
+      color:#fff;
+    }
+
+    .heroBg{
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow:hidden;
+    }
+
+    .heroBg img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transform:scale(1.05);
+    }
+
+    .heroShade{
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at 30% 25%, rgba(0,0,0,.2), rgba(0,0,0,.65));
+    }
+
+    .heroContent{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      padding:clamp(18px,4vw,56px);
+    }
+
+    .glass{
+      max-width:980px;
+      padding:clamp(26px,4vw,44px);
+      border-radius:var(--radius);
+      background:rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter:blur(14px);
+      box-shadow:0 18px 60px rgba(0,0,0,.35);
     }
 
     h1{
-      font-size:clamp(36px,6vw,64px);
-      letter-spacing:-.02em;
-      margin:0 0 12px;
+      margin:0;
+      font-size:clamp(44px,8vw,82px);
+      letter-spacing:-0.03em;
     }
 
-    p{
+    .sub{
+      margin-top:14px;
+      font-size:clamp(18px,2.2vw,28px);
+      opacity:.9;
+    }
+
+    .btn{
+      margin-top:28px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:46px;
+      padding:0 22px;
+      border-radius:999px;
+      background:#fff;
+      color:#111;
+      font-weight:600;
+    }
+
+    /* ==============================
+       SECTION
+       ============================== */
+    .section{
+      padding:72px clamp(18px,4vw,56px);
+    }
+
+    .sectionInner{
+      max-width:var(--contentMax);
+      margin:0 auto;
+    }
+
+    .sectionTitle{
+      font-size:clamp(34px,4.4vw,56px);
+      margin:0 0 28px;
+      letter-spacing:-0.02em;
+    }
+
+    /* ==============================
+       APPLE-STYLE RAIL (shared)
+       ============================== */
+    .railWrap{
+      width:100vw;
+      margin-left:calc(50% - 50vw);
+      padding-bottom:84px;
+      position:relative;
+    }
+
+    .mediaRail{
+      display:flex;
+      gap:22px;
+      overflow-x:auto;
+      padding-left:max(var(--gutter),calc((100vw - var(--contentMax))/2 + var(--gutter)));
+      padding-right:max(14vw,var(--gutter));
+      scroll-snap-type:x mandatory;
+      scroll-behavior:smooth;
+    }
+
+    .mediaRail::-webkit-scrollbar{ display:none; }
+
+    .mediaRail .tile{
+      flex:0 0 auto;
+      width:var(--railTileWidth);
+      scroll-snap-align:start;
+    }
+
+    .tile{
+      background:var(--cardBg);
+      border:1px solid var(--cardStroke);
+      border-radius:var(--tileRadius);
+      min-height:var(--railTileMinHeight);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      transition:transform .3s var(--easeApple), box-shadow .3s var(--easeApple);
+    }
+
+    .tile:hover{
+      transform:translateY(-6px);
+      box-shadow:var(--shadowHover);
+    }
+
+    .tileMedia{
+      aspect-ratio:var(--railMediaRatio);
+      background:#fff;
+      padding:28px;
+    }
+
+    .tileMedia img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+
+    .tileBody{
+      padding:22px;
       font-size:18px;
-      color:var(--muted);
-      margin:0;
+      line-height:1.25;
+      border-top:1px solid rgba(17,17,17,.06);
+    }
+
+    /* ==============================
+       ARROWS
+       ============================== */
+    .railNav{
+      position:absolute;
+      right:var(--gutter);
+      bottom:16px;
+      display:flex;
+      gap:14px;
+    }
+
+    .railArrow{
+      width:44px;
+      height:44px;
+      border-radius:999px;
+      background:rgba(0,0,0,.06);
+      border:0;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+    }
+
+    .railArrow svg{
+      width:16px;
+      height:16px;
+      stroke:#111;
+      stroke-width:3;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
     }
   </style>
 </head>
 
 <body>
-  <main class="wrap">
-    <div>
+
+<!-- HERO -->
+<section class="heroWrap">
+  <div class="heroBg">
+    <img src="hero.jpg" alt="The Better Product">
+    <div class="heroShade"></div>
+  </div>
+  <div class="heroContent">
+    <div class="glass">
       <h1>The Better Product</h1>
-      <p>Design-led. Technology-driven. Built with intention.</p>
+      <p class="sub">Designed simply. Built intentionally.</p>
+      <a class="btn" href="#coffee">Coffee</a>
     </div>
-  </main>
+  </div>
+</section>
+
+<!-- COFFEE -->
+<section id="coffee" class="section">
+  <div class="sectionInner">
+    <h2 class="sectionTitle">Coffee.</h2>
+  </div>
+
+  <div class="railWrap">
+    <div class="mediaRail">
+      <article class="tile">
+        <div class="tileMedia"><img src="media/coffee-bag.jpg"></div>
+        <div class="tileBody"><strong>Signature Roast</strong> — balanced and smooth.</div>
+      </article>
+      <article class="tile">
+        <div class="tileMedia"><img src="media/coffee-can.jpg"></div>
+        <div class="tileBody"><strong>Cold Brew</strong> — clean energy, no compromise.</div>
+      </article>
+      <article class="tile">
+        <div class="tileMedia"><img src="media/coffee-cup.jpg"></div>
+        <div class="tileBody"><strong>Everyday Cup</strong> — refined and familiar.</div>
+      </article>
+    </div>
+
+    <div class="railNav">
+      <button class="railArrow" onclick="document.querySelector('#coffee .mediaRail').scrollBy({left:-560,behavior:'smooth'})">
+        <svg viewBox="0 0 24 24"><path d="M14.5 6.5L9 12l5.5 5.5"/></svg>
+      </button>
+      <button class="railArrow" onclick="document.querySelector('#coffee .mediaRail').scrollBy({left:560,behavior:'smooth'})">
+        <svg viewBox="0 0 24 24"><path d="M9.5 6.5L15 12l-5.5 5.5"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section id="events" class="section">
+  <div class="sectionInner">
+    <h2 class="sectionTitle">Events.</h2>
+  </div>
+
+  <div class="railWrap">
+    <div class="mediaRail">
+      <article class="tile">
+        <div class="tileMedia"><img src="media/event-pop-up.jpg"></div>
+        <div class="tileBody"><strong>Pop-Ups</strong> — physical presence, real moments.</div>
+      </article>
+      <article class="tile">
+        <div class="tileMedia"><img src="media/event-tasting.jpg"></div>
+        <div class="tileBody"><strong>Tastings</strong> — experience before purchase.</div>
+      </article>
+      <article class="tile">
+        <div class="tileMedia"><img src="media/event-launch.jpg"></div>
+        <div class="tileBody"><strong>Launch Events</strong> — built for attention.</div>
+      </article>
+    </div>
+
+    <div class="railNav">
+      <button class="railArrow" onclick="document.querySelector('#events .mediaRail').scrollBy({left:-560,behavior:'smooth'})">
+        <svg viewBox="0 0 24 24"><path d="M14.5 6.5L9 12l5.5 5.5"/></svg>
+      </button>
+      <button class="railArrow" onclick="document.querySelector('#events .mediaRail').scrollBy({left:560,behavior:'smooth'})">
+        <svg viewBox="0 0 24 24"><path d="M9.5 6.5L15 12l-5.5 5.5"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
 </body>
 </html>
