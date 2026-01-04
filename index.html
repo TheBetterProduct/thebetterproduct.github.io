@@ -50,7 +50,7 @@
        HERO (narrower so Coffee is the star)
        ============================== */
     .heroWrap{
-      min-height:110vh; /* narrower than before */
+      min-height:110vh;
       position:relative;
       background:#000;
       color:#fff;
@@ -59,7 +59,7 @@
     .heroBg{
       position:sticky;
       top:0;
-      height:88vh; /* slightly less dominant */
+      height:88vh;
       overflow:hidden;
     }
 
@@ -85,7 +85,7 @@
     }
 
     .glass{
-      max-width:820px; /* narrower */
+      max-width:820px;
       padding:clamp(22px,3.6vw,40px);
       border-radius:var(--radius);
       background:rgba(0,0,0,.22);
@@ -96,7 +96,7 @@
 
     h1{
       margin:0;
-      font-size:clamp(40px,7vw,74px); /* slightly smaller */
+      font-size:clamp(40px,7vw,74px);
       letter-spacing:-0.03em;
     }
 
@@ -158,8 +158,8 @@
       display:flex;
       gap:var(--railGap);
       overflow-x:auto;
-      padding-left:var(--containerPad);   /* aligns with section text */
-      padding-right:var(--containerPad);  /* ends cleanly too */
+      padding-left:var(--containerPad);
+      padding-right:var(--containerPad);
       scroll-snap-type:x mandatory;
       scroll-behavior:smooth;
       -webkit-overflow-scrolling:touch;
@@ -170,25 +170,16 @@
 
     .mediaRail .tile{
       flex:0 0 auto;
-
-      /* This is the key: page-friendly responsive tile width */
       width:clamp(260px, 78vw, 560px);
-
       scroll-snap-align:start;
     }
 
-    /* Desktop: show more “page width” feel (3 tiles can exist in the rail comfortably) */
     @media (min-width: 900px){
-      .mediaRail .tile{
-        width:clamp(420px, 44vw, 560px);
-      }
+      .mediaRail .tile{ width:clamp(420px, 44vw, 560px); }
     }
 
-    /* Wide screens: keep it elegant, not comically huge */
     @media (min-width: 1280px){
-      .mediaRail .tile{
-        width:clamp(460px, 36vw, 560px);
-      }
+      .mediaRail .tile{ width:clamp(460px, 36vw, 560px); }
     }
 
     .tile{
@@ -269,17 +260,52 @@
       stroke-linejoin:round;
     }
 
-    /* On small screens, keep arrows but make them less dominant */
     @media (max-width: 520px){
       .railNav{
         right:calc(var(--gutter) - 6px);
         bottom:10px;
         gap:10px;
       }
-      .railArrow{
-        width:40px;
-        height:40px;
+      .railArrow{ width:40px; height:40px; }
+    }
+
+    /* ==============================
+       MOBILE: Red Bull–style overlap stack
+       Desktop rail stays the same
+       ============================== */
+    @media (max-width: 760px){
+      .railWrap{
+        width:100%;
+        margin-left:0;
+        padding-bottom:36px;
+        position:relative;
       }
+
+      .mediaRail{
+        display:block;
+        overflow:visible;
+        padding-left:0;
+        padding-right:0;
+        scroll-snap-type:none;
+      }
+
+      .mediaRail .tile{
+        width:calc(100% - (var(--gutter) * 2));
+        margin:0 auto;
+        min-height:72vh;
+
+        position:sticky;
+        top:clamp(74px, 10vh, 110px);
+
+        margin-bottom:-18vh;
+
+        border-radius:24px;
+        z-index: calc(100 - var(--i, 0));
+      }
+
+      .railNav{ display:none; }
+
+      .tileMedia{ padding:18px; }
     }
   </style>
 </head>
@@ -393,6 +419,13 @@
       scrollRail(nextBtn.getAttribute('data-rail-next'), 1);
     }
   }, { passive: true });
+
+  // Give each tile an index for stacking order (mobile overlap mode)
+  document.querySelectorAll('.mediaRail').forEach(rail=>{
+    rail.querySelectorAll('.tile').forEach((tile, i)=>{
+      tile.style.setProperty('--i', i);
+    });
+  });
 </script>
 
 </body>
