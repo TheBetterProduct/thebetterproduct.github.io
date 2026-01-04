@@ -7,6 +7,10 @@
 
   <meta name="description" content="The Better Product — design-forward consumer goods built with intention." />
 
+  <!-- iOS Safari / Mobile browser UI tint -->
+  <meta name="theme-color" content="#D6E9F8">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
   <style>
     :root{
       --radius: 22px;
@@ -45,6 +49,37 @@
     }
 
     a{ color:inherit; text-decoration:none; }
+
+    /* ==============================
+       MICRO LOADER (shows briefly on refresh & taps)
+       ============================== */
+    .loader{
+      position:fixed;
+      inset:0;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.72);
+      backdrop-filter: blur(10px);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .22s var(--easeOut);
+      z-index:9999;
+    }
+    .loader.isOn{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .spinner{
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      border:3px solid rgba(17,17,17,.18);
+      border-top-color: rgba(17,17,17,.75);
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin{
+      to{ transform: rotate(360deg); }
+    }
 
     /* ==============================
        HERO (narrower so Coffee is the star)
@@ -304,13 +339,17 @@
       }
 
       .railNav{ display:none; }
-
       .tileMedia{ padding:18px; }
     }
   </style>
 </head>
 
 <body>
+
+<!-- MICRO LOADER -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="spinner" role="status" aria-label="Loading"></div>
+</div>
 
 <!-- HERO -->
 <section class="heroWrap">
@@ -394,7 +433,33 @@
 </section>
 
 <script>
+  // =========================
+  // Loader (flash for premium feedback)
+  // =========================
+  const loader = document.getElementById('loader');
+  let loaderTimer = null;
+  let lastShow = 0;
+
+  function showLoader(ms = 650){
+    const now = Date.now();
+    // debounce so it doesn't strobe if user taps rapidly
+    if (now - lastShow < 350) return;
+    lastShow = now;
+
+    loader.classList.add('isOn');
+    clearTimeout(loaderTimer);
+    loaderTimer = setTimeout(() => loader.classList.remove('isOn'), ms);
+  }
+
+  // show briefly on refresh / initial load (including iOS bfcache restores)
+  window.addEventListener('pageshow', () => showLoader(700));
+
+  // show briefly on any tap/click anywhere on the page
+  document.addEventListener('pointerdown', () => showLoader(520), { passive:true });
+
+  // =========================
   // Apple-feel arrows: scroll by exactly 1 tile (tile width + gap), responsive.
+  // =========================
   function scrollRail(sectionSelector, dir){
     const section = document.querySelector(sectionSelector);
     if(!section) return;
@@ -414,9 +479,12 @@
     const nextBtn = e.target.closest('[data-rail-next]');
     if(prevBtn){
       scrollRail(prevBtn.getAttribute('data-rail-prev'), -1);
+      // optional: a micro-loader flash when using arrows
+      showLoader(420);
     }
     if(nextBtn){
       scrollRail(nextBtn.getAttribute('data-rail-next'), 1);
+      showLoader(420);
     }
   }, { passive: true });
 
